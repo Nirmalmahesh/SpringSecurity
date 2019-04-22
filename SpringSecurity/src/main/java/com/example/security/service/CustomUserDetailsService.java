@@ -1,25 +1,31 @@
-package com.example.security;
+package com.example.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service	
-public class ServiceProvider implements UserDetailsService {
+import com.example.security.pojo.User;
+import com.example.security.repository.UsersRepository;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService{
 
 	@Autowired
-	private UserRepo repo;
+	UsersRepository repo;
+	
+	User user;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		Users user = repo.findByUname(username);
-		if(user == null)
+		user = repo.findUserByUsername(username);
+		if(user==null)
 			throw new UsernameNotFoundException("User 404");
-		return new UserPrincipal(user);
+		
+		return new CustomUserDetails(user); 
 	}
 
+	
 }

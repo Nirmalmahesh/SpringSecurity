@@ -1,39 +1,45 @@
-package com.example.security;
+package com.example.security.service;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserPrincipal implements UserDetails {
+import com.example.security.pojo.Role;
+import com.example.security.pojo.User;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return Collections.singleton(new SimpleGrantedAuthority("USERS"));
-	}
-	
-	Users user;
-	
-	
+public class CustomUserDetails implements UserDetails {
 
-	public UserPrincipal(Users user) {
+	User user;
+		
+	public CustomUserDetails(User user) {
 		super();
 		this.user = user;
 	}
 
 	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		
+		return user.getRoles().stream()
+		.map(role->new SimpleGrantedAuthority("ROLE_"+role.getRole()))
+		.collect(Collectors.toList());
+		
+		
+	}
+
+	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return user.getPass();
+		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return user.getUname();
+		return user.getUsername();
 	}
 
 	@Override
@@ -61,5 +67,5 @@ public class UserPrincipal implements UserDetails {
 	}
 
 	
-
+		
 }
